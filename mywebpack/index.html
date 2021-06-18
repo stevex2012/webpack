@@ -1,0 +1,43 @@
+<!-- <script>
+  function require(file){
+    return {
+      default: `
+        function(a,b){ return a+b }
+      `
+    }
+  }
+</script> -->
+
+<!-- <script src="./src/index.js" > -->
+<script>
+// 搜集依赖
+// 分析依赖
+  (function(info){
+    function require(file){
+      eval(info[file])
+      return exports
+    }
+    // constructor require  exports
+    const exports = {}
+    // exports.default = {}
+    Object.keys(info).forEach(key => {
+      eval(`
+        (function(require, exports){
+          ${info[key]}
+        })(${require}, exports)
+      `)
+    })
+
+  })({
+    
+    './index.js': `
+      const add = require('./add.js').default
+      console.log(add(1,5))
+    ` ,
+    './add.js': `
+      exports.default = function(a,b){ return a+b }
+    `,
+  })
+
+
+</script>
